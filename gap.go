@@ -4,8 +4,6 @@ import (
 	"fmt"
 )
 
-const minimumGapIncrease = 16
-
 type GapBuffer struct {
 	data    []rune
 	preLen  int
@@ -41,15 +39,10 @@ func (r *GapBuffer) postStart() int {
 
 func (r *GapBuffer) Insert(s string) {
 	if r.gapLen() < len(s) {
-		increaseBy := len(s) - r.gapLen()
+		newData := make([]rune, len(r.data) * 2)
 
-		if increaseBy < minimumGapIncrease {
-			increaseBy = minimumGapIncrease
-		}
-
-		newData := make([]rune, len(r.data) + increaseBy)
 		copy(newData, r.data[:r.preLen])
-		copy(newData[r.postStart() + increaseBy:],
+		copy(newData[r.postStart() + len(r.data):],
 			r.data[r.postStart():])
 
 		r.data = newData
